@@ -1,0 +1,14 @@
+{
+  "name": "Extract Words Test",
+  "description": "Test",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["index.js"],
+      "css": ["style.css"]
+    }
+  ]
+}
