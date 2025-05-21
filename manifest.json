@@ -7,8 +7,18 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["index.js"],
+      "js": ["dist/content-script.js"],
       "css": ["style.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "dist/background.js"
+  },
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
