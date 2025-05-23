@@ -20,6 +20,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ success: false, error: error.message });
       });
     return true; // Required for async sendResponse
+  } else if (message.action === 'getDefinition') {
+    getDefinitionAI(message.text, message.context)
+      .then((result) => {
+        sendResponse({ success: true, result });
+      })
+      .catch((error) => {
+        console.error('Error in definition', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true; // Required for async sendResponse
   }
 });
 
@@ -27,18 +37,46 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function analyzeTextWithAI(text, context) {
   try {
     const prompt = `
-      Analyze the selected text and its context:
-      Selected Text: "${text}"
-      Context: ${context}
-      
-      Provide a brief analysis of the selected text's definition and importance within the context.
+      Respond in exactly this format:
+      [brief analysis of ${context} under 50 words]
+      - Use easy words
+      - Analysis should be concise, clear, and easy to understand.
     `;
 
     const result = await model.generateContent(prompt);
-    console.log('AI response:', result.response.text());
+    console.log('AI RESPONSE:', result.response.text());
     return result.response.text();
   } catch (error) {
     console.error('AI analysis error:', error);
     throw error;
   }
 }
+
+async function getDefinitionAI(text, context) {
+  try {
+    const prompt = `
+      Get the definition of ${text} based on the context: ${context}.
+      Respond in exactly this format:
+      [parts of speech]: [definition]
+
+      - If there are multiple definitions, seperate them by -.
+      - Be concise and clear.
+      - Parts of speech surrounded by [].
+    `;
+
+    const result = await model.generateContent(prompt);
+    console.log('AI Definition Response:', result.response.text());
+    return result.response.text();
+  } catch (error) {
+    console.error('AI definition error:', error);
+    throw error;
+  }
+}
+/*
+TODO: What if there are multiple definitions? -> need to make them a list, <oi>Def1</oi>, <oi>Def2</oi>, ...
+      - splitter: '-'
+      - use splitter to separate definitions.
+
+TODO: Add Show Analysis button. -> Show analysis (Expand below Definition).
+      Separate between Definition and Analysis.
+*/

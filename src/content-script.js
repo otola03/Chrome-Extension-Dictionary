@@ -36,6 +36,32 @@ async function analyzeText(text, context) {
   }
 }
 
+async function getDefinition(text, context) {
+  try {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage(
+        { action: 'getDefinition', text, context },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.error('Error sending message:', chrome.runtime.lastError);
+            reject(chrome.runtime.lastError.message);
+            return;
+          }
+
+          if (response.success) {
+            resolve(response.result);
+          } else {
+            reject(response.error || 'Unknown error');
+          }
+        }
+      );
+    });
+  } catch (error) {
+    console.error('Error getting definition of the text:', error);
+    return 'Error getting definition of the text';
+  }
+}
+
 // Get surrounding text to provide context
 function getSurroundingText(range) {
   // Get the container element
@@ -44,7 +70,7 @@ function getSurroundingText(range) {
     container.nodeType === 3 ? container.parentElement : container;
 
   const containerText = containerElement.textContent || ''; // if undefined, use empty string
-  console.log('Context text:', containerText);
+  console.log('CONTEXT_TEXT:', containerText);
   return containerText;
 }
 
@@ -66,7 +92,7 @@ document.addEventListener('mouseup', async () => {
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
 
-    tooltip.style.position = 'absolute';
+    // Position is handled by CSS now
     tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
     tooltip.style.left = `${rect.left + window.scrollX}px`;
 
@@ -78,9 +104,16 @@ document.addEventListener('mouseup', async () => {
     const context = getSurroundingText(range);
     try {
       const analysis = await analyzeText(text, context);
+      const definition = await getDefinition(text, context);
 
       if (currentTooltip) {
-        currentTooltip.innerHTML = `<div class="tooltip-content">${analysis}</div>`;
+        currentTooltip.innerHTML = `
+        <div class="tooltip-content">
+          <span id="tooltip--text">${text}</span>
+          <span id="toolltip-definition">${definition}</span>
+          <span id="tooltip-analysis">${analysis}</span>
+        </div>
+        `;
 
         // Add close button
         const closeBtn = document.createElement('span');
