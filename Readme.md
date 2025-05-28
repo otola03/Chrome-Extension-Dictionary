@@ -1,12 +1,9 @@
-# Manifest.json
+# Chrome Extension Dictionary
 
-## background
+## Select the text while reading
 
-An optional manifest key used to specify a javascript file as the extension service worker. A service worker is a background script that acts as the extension's main event handler.
-
-```json
-"background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
-```
+- When you select the text, the extension will extract the text.
+- It will show you the exact definition based on the context of the sentence around.
+- Click the + button to show the explanation of the context!
+  <br></br>
+  ![image](./image.png)
