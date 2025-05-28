@@ -7,3 +7,6 @@
 - Click the + button to show the explanation of the context!
   <br></br>
   ![image](./image.png)
+  <br></br>
+
+  Gemini API used: ( gemini-1.5-flash )
