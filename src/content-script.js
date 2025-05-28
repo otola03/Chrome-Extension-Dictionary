@@ -4,6 +4,7 @@ let currentTooltip = null;
 // Function to remove the tooltip
 const removeTooltip = () => {
   if (currentTooltip) {
+    console.log('Tooltip Removed');
     currentTooltip.remove();
     currentTooltip = null;
   }
@@ -80,9 +81,9 @@ document.addEventListener('mouseup', async () => {
   const text = selection.toString().trim();
 
   // remove existing tooltip
-  if (currentTooltip) {
-    removeTooltip();
-  }
+  // if (currentTooltip) {
+  //   removeTooltip();
+  // }
 
   if (text && !document.getElementById('tooltip-popup')) {
     const tooltip = document.createElement('div');
@@ -103,25 +104,38 @@ document.addEventListener('mouseup', async () => {
     // Get context and analyze
     const context = getSurroundingText(range);
     try {
-      const analysis = await analyzeText(text, context);
       const definition = await getDefinition(text, context);
+      const analysis = await analyzeText(text, context);
 
       if (currentTooltip) {
         currentTooltip.innerHTML = `
+        <button class="btn" id="close-btn">×</button>
         <div class="tooltip-content">
-          <span id="tooltip--text">${text}</span>
-          <span id="toolltip-definition">${definition}</span>
-          <span id="tooltip-analysis">${analysis}</span>
+          <span id="tooltip-text">${text}</span>
+          <span id="tooltip-definition">${definition}</span>
+          <button class="btn" id="tooltip-btn">
+            <span id="tooltip-btn-plus">+</span>
+            <span id="tooltip-btn-text">Show Explanation</span>
+          </button>
         </div>
         `;
-
-        // Add close button
-        const closeBtn = document.createElement('span');
-        closeBtn.classList.add('close-btn');
-        closeBtn.innerHTML = '×';
-        closeBtn.onclick = removeTooltip;
-        currentTooltip.appendChild(closeBtn);
       }
+      document
+        .getElementById('tooltip-btn')
+        .addEventListener('click', async () => {
+          if (currentTooltip) {
+            console.log('Analysis:', analysis);
+            currentTooltip.insertAdjacentHTML(
+              'beforeend',
+              `<span id="tooltip-analysis">${analysis}</span>`
+            );
+            // remove "Show Explanation" button
+            document.getElementById('tooltip-btn').remove();
+          }
+        });
+      document
+        .getElementById('close-btn')
+        .addEventListener('click', removeTooltip);
     } catch (error) {
       if (currentTooltip) {
         currentTooltip.innerHTML = `<div class="tooltip-content">Error: ${error}</div>`;
@@ -130,9 +144,9 @@ document.addEventListener('mouseup', async () => {
   }
 });
 
-// Close tooltip when clicking outside
-document.addEventListener('mousedown', (e) => {
-  if (currentTooltip && !currentTooltip.contains(e.target)) {
-    removeTooltip();
-  }
-});
+// // Close tooltip when clicking outside
+// document.addEventListener('mousedown', (e) => {
+//   if (currentTooltip && !currentTooltip.contains(e.target)) {
+//     removeTooltip();
+//   }
+// });

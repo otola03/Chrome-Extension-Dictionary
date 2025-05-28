@@ -1,17 +1,11 @@
-/* body {
-  background-color: aliceblue;
-  font-style: italic;
-  font-size: 1rem; */
-/* Changed: 16px to 1rem */
-/* } */
-
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+span {
+  display: block;
+}
 
 .tooltip {
   font-family: 'Lato', sans-serif;
-}
-
-#tooltip-popup {
   position: absolute;
   background-color: white;
   color: #5a5b5f;
@@ -23,9 +17,19 @@
   font-weight: 500;
   font-family: 'Lato', sans-serif;
   z-index: 1000;
-  border: 0.0625rem solid #eee; /* Changed: 1px to 0.0625rem */
+  /* border: 0.0625rem solid #eee; */
   max-width: 18.75rem; /* Changed: 300px to 18.75rem */
+  border: none;
 }
+
+#tooltip-popup2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* TEXTS */
 
 .tooltip-content {
   max-height: 12.5rem; /* Changed: 200px to 12.5rem */
@@ -34,7 +38,7 @@
   margin-right: 0.2rem; /* Changed: 3.2px to 0.2rem */
 }
 
-#tooltip--text {
+#tooltip-text {
   font-size: 1.3rem; /* Changed: 20.8px to 1.3rem */
   line-height: 2rem; /* Changed: 32px to 2rem */
   font-weight: bold;
@@ -43,18 +47,73 @@
   margin-bottom: 0.5rem; /* Changed: 8px to 0.5rem */
 }
 
-#tooltip--definition {
+#tooltip-definition {
   font-size: 0.8rem; /* Changed: 12.8px to 0.8rem */
+  margin-bottom: 0.5rem;
 }
 
-.close-btn {
+#tooltip-analysis {
+  font-size: 1rem;
+  border-top: 0.1rem solid rgba(0, 0, 0, 0.2);
+  padding-top: 0.5rem;
+}
+
+/* BUTTONS */
+
+.btn {
+  background-color: white;
+  border: none;
+  border-radius: 0.35rem;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+#close-btn {
   position: absolute;
-  top: 0.1rem; /* Changed: 1.6px to 0.1rem */
-  right: 0.1rem; /* Changed: 1.6px to 0.1rem */
+  top: 0.06rem;
+  right: 0.2rem;
   cursor: pointer;
   font-size: 1.2rem; /* Changed: 19.2px to 1.2rem */
 }
 
-span {
-  display: block;
+#tooltip-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #57d095, #7fe3b3);
+  border-radius: 50%;
+  color: white;
+  margin-top: 0.5rem;
+}
+
+#tooltip-btn:hover {
+  width: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: 1rem;
+}
+
+#tooltip-btn-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+#tooltip-btn-text {
+  display: none;
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+#tooltip-btn:hover #tooltip-btn-text {
+  display: inline;
 }
