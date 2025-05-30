@@ -6,7 +6,7 @@ dotenv.config();
 module.exports = {
   entry: {
     background: './src/background.js',
-    'content-script': './src/content-script.js'
+    'content-script': './src/content-script.js',
   },
   output: {
     filename: '[name].js',
@@ -15,7 +15,8 @@ module.exports = {
   mode: 'production',
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
-    })
-  ]
+      // for background.js proxy thing, but not used here.
+      'process.env.API_KEY': JSON.stringify(process.env.API_KEY),
+    }),
+  ],
 };
