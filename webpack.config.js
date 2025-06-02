@@ -1,7 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
-const dotenv = require('dotenv');
-dotenv.config();
 
 module.exports = {
   entry: {
@@ -13,10 +10,6 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   mode: 'production',
-  plugins: [
-    new webpack.DefinePlugin({
-      // for background.js proxy thing, but not used here.
-      'process.env.API_KEY': JSON.stringify(process.env.API_KEY),
-    }),
-  ],
+  // No plugins needed since using a proxy server
+  plugins: [],
 };

@@ -1,12 +1,8 @@
-// Background script with ESM imports
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// Background script
 
-// API key is injected by webpack from .env file
-const API_KEY = process.env.API_KEY;
-
-// Initialize AI model
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+// Proxy server URL - replace with your actual deployed server URL when in production
+// const PROXY_SERVER_URL = 'chrome-dictionary-proxy-server.vercel.app';
+const PROXY_SERVER_URL = 'https://chrome-dictionary-proxy-server.vercel.app';
 
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -36,16 +32,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // AI analysis function
 async function analyzeTextWithAI(text, context) {
   try {
-    const prompt = `
-      Respond in exactly this format:
-      [brief analysis of ${context} under 50 words]
-      - Use easy words
-      - Analysis should be concise, clear, and easy to understand.
-    `;
+    const response = await fetch(`${PROXY_SERVER_URL}/api/analyze`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text, context }),
+    });
 
-    const result = await model.generateContent(prompt);
-    console.log('AI RESPONSE:', result.response.text());
-    return result.response.text();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || 'ANALYZING: Failed to get analysis from proxy server'
+      );
+    }
+
+    const data = await response.json();
+    console.log('AI RESPONSE:', data.result);
+    return data.result;
   } catch (error) {
     console.error('AI analysis error:', error);
     throw error;
@@ -54,19 +58,25 @@ async function analyzeTextWithAI(text, context) {
 
 async function getDefinitionAI(text, context) {
   try {
-    const prompt = `
-      Get the definition of ${text} based on the context: ${context}.
-      Respond in exactly this format:
-      [parts of speech]: [definition]
+    const response = await fetch(`${PROXY_SERVER_URL}/api/definition`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text, context }),
+    });
 
-      - If there are multiple definitions, seperate them by -.
-      - Be concise and clear.
-      - Parts of speech surrounded by [].
-    `;
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error ||
+          'DEFINITION: Failed to get definition from proxy server'
+      );
+    }
 
-    const result = await model.generateContent(prompt);
-    console.log('AI Definition Response:', result.response.text());
-    return result.response.text();
+    const data = await response.json();
+    console.log('AI Definition Response:', data.result);
+    return data.result;
   } catch (error) {
     console.error('AI definition error:', error);
     throw error;
