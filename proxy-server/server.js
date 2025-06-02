@@ -10,17 +10,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Google AI with API key from environment variables
 const API_KEY = process.env.API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-// Text analysis endpoint
+// Text analysis
 app.post('/api/analyze', async (req, res) => {
   try {
     const { text, context } = req.body;
@@ -57,7 +55,7 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
-// Definition endpoint
+// Definition
 app.post('/api/definition', async (req, res) => {
   try {
     const { text, context } = req.body;
@@ -95,7 +93,6 @@ app.post('/api/definition', async (req, res) => {
   }
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`SERVER LISTENING ON PORT: ${PORT}`);
 });
