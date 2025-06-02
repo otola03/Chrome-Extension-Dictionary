@@ -9,7 +9,7 @@
   ![image](./image.png)
   <br></br>
 
-  Gemini API used: ( gemini-1.5-flash )
+  Gemini API used: ( gemini-2.0-flash )
 
 ## Proxy Server
 
