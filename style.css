@@ -53,7 +53,7 @@ span {
 }
 
 #tooltip-analysis {
-  font-size: 1rem;
+  font-size: 0.9rem;
   border-top: 0.1rem solid rgba(0, 0, 0, 0.2);
   padding-top: 0.5rem;
 }
