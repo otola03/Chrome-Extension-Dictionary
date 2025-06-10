@@ -18,7 +18,10 @@ async function analyzeText(text, context) {
         { action: 'analyzeText', text, context },
         (response) => {
           if (chrome.runtime.lastError) {
-            console.error('Error sending message:', chrome.runtime.lastError);
+            console.error(
+              'Error sending message (analyze text):',
+              chrome.runtime.lastError
+            );
             reject(chrome.runtime.lastError.message);
             return;
           }
@@ -44,7 +47,10 @@ async function getDefinition(text, context) {
         { action: 'getDefinition', text, context },
         (response) => {
           if (chrome.runtime.lastError) {
-            console.error('Error sending message:', chrome.runtime.lastError);
+            console.error(
+              'Error sending message (get definition):',
+              chrome.runtime.lastError
+            );
             reject(chrome.runtime.lastError.message);
             return;
           }
@@ -91,7 +97,7 @@ document.addEventListener('mouseup', async () => {
     tooltip.classList.add('tooltip');
 
     const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
+    const rect = range.getBoundingClientRect(); // position of the selected text
 
     // Position is handled by CSS now
     tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
@@ -105,7 +111,7 @@ document.addEventListener('mouseup', async () => {
     const context = getSurroundingText(range);
     try {
       const definition = await getDefinition(text, context);
-      const analysis = await analyzeText(text, context);
+      const analysis = (await analyzeText(text, context)).slice(0, -1);
 
       if (currentTooltip) {
         currentTooltip.innerHTML = `
@@ -120,6 +126,7 @@ document.addEventListener('mouseup', async () => {
         </div>
         `;
       }
+      // Showing Analysis Button
       document
         .getElementById('tooltip-btn')
         .addEventListener('click', async () => {
@@ -133,6 +140,7 @@ document.addEventListener('mouseup', async () => {
             document.getElementById('tooltip-btn').remove();
           }
         });
+      // Close Button
       document
         .getElementById('close-btn')
         .addEventListener('click', removeTooltip);
@@ -143,10 +151,3 @@ document.addEventListener('mouseup', async () => {
     }
   }
 });
-
-// // Close tooltip when clicking outside
-// document.addEventListener('mousedown', (e) => {
-//   if (currentTooltip && !currentTooltip.contains(e.target)) {
-//     removeTooltip();
-//   }
-// });

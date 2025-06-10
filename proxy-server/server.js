@@ -38,9 +38,10 @@ app.post('/api/analyze', async (req, res) => {
 
     const prompt = `
       Respond in exactly this format:
-      [brief analysis of ${context} under 50 words]
+      brief analysis of ${context} under 50 words
       - Use easy words
       - Analysis should be concise, clear, and easy to understand.
+      - Analysis must be based on facts, no hallucinations.
     `;
 
     const result = await model.generateContent(prompt);
